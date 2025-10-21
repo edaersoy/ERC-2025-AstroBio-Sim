@@ -19,13 +19,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from matplotlib import animation
 
-# Create Mars terrain simulation
 mars_terrain = np.zeros((200, 200, 3), dtype=np.uint8)
 rock_positions = [(50, 50), (100, 120), (150, 80)]
 for position in rock_positions:
     cv2.circle(mars_terrain, position, 10, (0, 255, 0), -1)
 
-# Object detection
 hsv_image = cv2.cvtColor(mars_terrain, cv2.COLOR_BGR2HSV)
 lower_green = np.array([40, 40, 40])
 upper_green = np.array([80, 255, 255])
@@ -42,14 +40,12 @@ for contour in contours:
     cv2.putText(mars_terrain, f'D:{depth:.1f} W:{weight:.2f}', (x, y-10),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
 
-# Classification
 np.random.seed(42)
 n_samples = 100
 spectrometer_data = np.random.normal(500, 100, (n_samples, 3))
 labels = np.random.choice([0, 1], n_samples, p=[0.6, 0.4])
 pH_values = np.random.uniform(4, 9, n_samples)
 
-# Train model
 train_data, test_data, train_labels, test_labels, train_pH, test_pH = train_test_split(
     spectrometer_data, labels, pH_values, test_size=0.3, random_state=42)
 classification_model = RandomForestClassifier(n_estimators=10, random_state=42)
@@ -57,13 +53,11 @@ classification_model.fit(train_data, train_labels)
 predictions = classification_model.predict(test_data)
 accuracy = accuracy_score(test_labels, predictions)
 
-# Analyze new rock
 new_spectrometer_data = np.array([[450, 520, 480]])
 new_pH = np.random.uniform(4, 9)
 new_prediction = classification_model.predict(new_spectrometer_data)[0]
 analysis_report = f"Sample Analysis: {'Water Trace' if new_prediction == 1 else 'Mineral'}, pH: {new_pH:.2f}"
 
-# Visualization
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 ax1.imshow(cv2.cvtColor(mars_terrain, cv2.COLOR_BGR2RGB))
 ax1.set_title('ERC 2025 Sampling: Rock Detection')
@@ -77,7 +71,6 @@ plt.tight_layout()
 plt.show()
 print(f"Model Accuracy: {accuracy:.2f}\nReport: {analysis_report}")
 
-# Animation
 fig, ax = plt.subplots()
 ax.imshow(cv2.cvtColor(mars_terrain, cv2.COLOR_BGR2RGB))
 def animate(frame):
